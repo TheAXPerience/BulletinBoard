@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: postgres
+    container_name: db
     image: postgres:13.2-alpine
     environment:
       POSTGRES_USER: postgres
@@ -13,6 +13,28 @@ services:
     networks:
     - db
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  app:
+    container_name: app
+    image: bulletin-board:latest
+    build:
+      context: .
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bulletin_board_db
+    - SPRING_DATASOURCE_USERNAME=postgres
+    - SPRING_DATASOURCE_PASSWORD=password
+    - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+    - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+    - db
 
 networks:
   db:
