@@ -6,7 +6,6 @@ WORKDIR /app
 
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
-COPY docker-compose.yml ./
 RUN ./mvnw dependency:resolve
 
 COPY src ./src

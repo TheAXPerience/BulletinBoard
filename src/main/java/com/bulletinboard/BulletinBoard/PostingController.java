@@ -18,7 +18,7 @@ import jakarta.transaction.Transactional;
 @RequestMapping("/api/postings")
 @Transactional
 public class PostingController {
-	private final PostingRepository postingRepository;
+	private final PostingService postingService;
 	
 	record PostingRequest(
 			String poster,
@@ -26,13 +26,13 @@ public class PostingController {
 	) {}
 	
 	
-	public PostingController(PostingRepository postingRepository) {
-		this.postingRepository = postingRepository;
+	public PostingController(PostingService postingService) {
+		this.postingService = postingService;
 	}
 	
 	@GetMapping("")
 	public List<Posting> getPostings() {
-		return this.postingRepository.findAllByOrderByDateCreatedDesc();
+		return this.postingService.getPostings();
 	}
 	
 	@PostMapping("")
@@ -40,28 +40,22 @@ public class PostingController {
 		Posting posting = new Posting();
 		posting.setPoster(postingRequest.poster());
 		posting.setContent(postingRequest.content());
-		this.postingRepository.save(posting);
-		return true;
+		return this.postingService.savePosting(posting);
 	}
 	
 	@PutMapping("/{postingId}")
 	public boolean editPosting(
 			@PathVariable("postingId") long postingId,
 			@RequestBody PostingRequest postingRequest) {
-		Optional<Posting> posting = this.postingRepository.findById(postingId);
-		if (!posting.isPresent()) return false;
-		Posting p = posting.get();
-		p.setContent(postingRequest.content());
-		p.setPoster(postingRequest.poster());
-		this.postingRepository.save(p);
-		return true;
+		Posting posting = this.postingService.getPostingById(postingId);
+		if (posting == null) return false;
+		posting.setContent(postingRequest.content());
+		posting.setPoster(postingRequest.poster());
+		return this.postingService.savePosting(posting);
 	}
 	
 	@DeleteMapping("/{postingId}")
 	public boolean deletePosting(@PathVariable("postingId") long postingId) {
-		Optional<Posting> posting = this.postingRepository.findById(postingId);
-		if (!posting.isPresent()) return false;
-		this.postingRepository.deleteById(postingId);
-		return true;
+		return this.postingService.deletePosting(postingId);
 	}
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Bulletin Board</title>
+  </head>
+  <body>
+    <h1>Bulletin Board</h1>
+    <button onclick="window.location='/form'">Add</button>
+    <div th:text="${allpostingssize}">0</div>
+    <br/>
+    <table th:if="${not #lists.isEmpty(postings)}">
+      <thead>
+        <tr>
+          <td>Date</td>
+          <td>Post</td>
+          <td>Name</td>
+          <td>Edit</td>
+          <td>Delete</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="post : ${postings}">
+          <td th:text="${#dates.format(post.dateCreated, 'dd-MM-yyyy hh:mm')}">0</td>
+          <td th:text="${post.content}">Content</td>
+          <td th:text="${post.poster}">Name</td>
+          <td><button>Edit</button></td>
+          <td><button>Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 th:if="${#lists.isEmpty(postings)}">There are no posts</h2>
+  </body>
+</html>
