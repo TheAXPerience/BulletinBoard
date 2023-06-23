@@ -4,10 +4,14 @@ FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN ./mvnw dependency:resolve
+# COPY .mvn/ .mvn
+# COPY mvnw pom.xml ./
+# RUN ./mvnw dependency:resolve
 
-COPY src ./src
+# COPY src ./src
 
-CMD ["./mvnw", "spring-boot:run"]
+# CMD ["./mvnw", "spring-boot:run"]
+
+COPY ./target/BulletinBoard-0.0.1-SNAPSHOT.jar /app
+EXPOSE 3000
+CMD ["java", "-jar", "BulletinBoard-0.0.1-SNAPSHOT.jar"]
