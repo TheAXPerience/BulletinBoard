@@ -20,7 +20,7 @@ services:
       retries: 5
   app:
     container_name: app
-    image: bulletin-board:latest
+    image: axperience/bulletin-board:latest
     build:
       context: .
     environment:
