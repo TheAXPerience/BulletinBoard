@@ -7,7 +7,6 @@
   <body>
     <h1>Bulletin Board</h1>
     <button onclick="window.location='/form'">Add</button>
-    <div th:text="${allpostingssize}">0</div>
     <br/>
     <table th:if="${not #lists.isEmpty(postings)}">
       <thead>
@@ -24,8 +23,14 @@
           <td th:text="${#dates.format(post.dateCreated, 'dd-MM-yyyy hh:mm')}">0</td>
           <td th:text="${post.content}">Content</td>
           <td th:text="${post.poster}">Name</td>
-          <td><button>Edit</button></td>
-          <td><button>Delete</button></td>
+          <td><button th:attr="onclick=|window.location='/${post.pid}/edit'|">Edit</button></td>
+          <td>
+            <form th:action="@{/{id}/delete(id=${post.pid})}" method="POST">
+              <input type="hidden" name="_method" value="DELETE" />
+              <input type="hidden" name="_token" value="{{ csrf_token() }}">
+              <input type="submit" value="Delete">
+            </form>
+          </td>
         </tr>
       </tbody>
     </table>
